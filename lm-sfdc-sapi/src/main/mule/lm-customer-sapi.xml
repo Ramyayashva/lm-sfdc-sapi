@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd 
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+    <http:listener-config name="lm-customer-sapi-httpListenerConfig">
+        <http:listener-connection host="0.0.0.0" port="8081" />
+    </http:listener-config>
+    <apikit:config name="lm-customer-sapi-config" api="resource::509e318b-3e6f-408b-8cb6-ecd456e01908:lm-customer-sapi:1.0.0:raml:zip:lm-customer-sapi.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <api-gateway:autodiscovery apiId="19303622" ignoreBasePath="true" doc:name="API Autodiscovery" doc:id="c9942c0c-feb9-43df-8c56-68697a070fc7" flowRef="lm-customer-sapi-main" />
+	<flow name="lm-customer-sapi-main" doc:id="78b2dd1c-4f36-4045-8301-9c9a410285f6">
+        <http:listener config-ref="lm-customer-sapi-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="lm-customer-sapi-config" doc:id="360ac1f3-2245-4014-b49a-aa6be1c03af5"/>
+        <error-handler ref="lm-errorhandlingError_Handler">        </error-handler>
+    </flow>
+    <flow name="lm-customer-sapi-console" doc:id="4569350b-39f9-4049-8fc8-1af5bab46e1c">
+        <http:listener config-ref="lm-customer-sapi-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="lm-customer-sapi-config" doc:id="56339c80-9e4a-41a0-bc7f-5b352784a657"/>
+        <error-handler ref="lm-errorhandlingError_Handler">
+        </error-handler>
+    </flow>
+    <flow name="delete:\customer\(id):lm-customer-sapi-config">
+        <ee:transform doc:name="Transform Message" doc:id="2012e642-ea67-42ef-ac70-5fd59c4fddc8">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <logger level="INFO" message="delete:\customer\(id):lm-customer-sapi-config" />
+		<error-handler ref="lm-errorhandlingError_Handler" />
+    </flow>
+    <flow name="delete:\customer\(id)\orders\(orderid):lm-customer-sapi-config">
+        <ee:transform doc:name="Transform Message" doc:id="6a362e97-a87b-44eb-ac5b-90ab5c7378b8">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+                <ee:set-variable variableName="orderid"><![CDATA[attributes.uriParams.'orderid']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <logger level="INFO" message="delete:\customer\(id)\orders\(orderid):lm-customer-sapi-config" />
+		<error-handler ref="lm-errorhandlingError_Handler" />
+    </flow>
+    <flow name="patch:\customer\(id):application\json:lm-customer-sapi-config">
+        <ee:transform doc:name="Transform Message" doc:id="ded47b8a-3c0e-4f40-b9cf-db8839e886eb">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message" doc:id="de53eb7c-25be-4934-a164-04ca1c553cc3">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  customerId: 1000,
+  status: "account created"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="lm-errorhandlingError_Handler" />
+    </flow>
+    <flow name="patch:\customer\(id)\orders\(orderid):application\json:lm-customer-sapi-config">
+        <ee:transform doc:name="Transform Message" doc:id="5fba663e-f415-413a-9367-9aed63e8b11b">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+                <ee:set-variable variableName="orderid"><![CDATA[attributes.uriParams.'orderid']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message" doc:id="61132414-7d44-47cc-8c1f-db96f938c011">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  orderId: 2000,
+  status: "order placed"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="lm-errorhandlingError_Handler" />
+    </flow>
+    <flow name="get:\customer\(id):lm-customer-sapi-config">
+        <ee:transform doc:name="Transform Message" doc:id="c1f11be2-2445-403c-9386-33608dabb67b">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message" doc:id="b74df023-7c7d-4fd8-9b3c-543a94221cb3">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  firstName: "tae",
+  lastName: "kim",
+  address: {
+    houseNo: 45,
+    address1: "North Street",
+    address2: "anna nagar",
+    pinCode: 600002,
+    town: "erode",
+    city: "chennai",
+    state: "TamilNadu",
+    country: "India"
+  },
+  email: "xxxx@gmail",
+  mobileNo: 1233445
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="lm-errorhandlingError_Handler" />
+    </flow>
+    <flow name="get:\customer\(id)\orders\(orderid):lm-customer-sapi-config">
+        <ee:transform doc:name="Transform Message" doc:id="4032403a-7cb6-455c-9859-3692e02cab53">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+                <ee:set-variable variableName="orderid"><![CDATA[attributes.uriParams.'orderid']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message" doc:id="dfc795bb-d792-4178-b20d-96a98ed2c4b0">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  productId: 2000,
+  orderId: 1000,
+  status: "completed",
+  customerId: 1200
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="lm-errorhandlingError_Handler" />
+    </flow>
+    <flow name="post:\customer:application\json:lm-customer-sapi-config">
+        <ee:transform doc:name="Transform Message" doc:id="dad87414-a686-40d7-8645-9eb8019f90ec">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  customerId: 1000,
+  status: "account created"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="lm-errorhandlingError_Handler" />
+    </flow>
+    <flow name="post:\customer\(id)\orders:application\json:lm-customer-sapi-config">
+        <ee:transform doc:name="Transform Message" doc:id="0e7a96b3-41a8-496c-8d16-81c3eab20247">
+            <ee:variables>
+                <ee:set-variable variableName="id"><![CDATA[attributes.uriParams.'id']]></ee:set-variable>
+            </ee:variables>
+        </ee:transform>
+        <ee:transform doc:name="Transform Message" doc:id="bd68f446-0bd9-492a-926f-b9b2644e8eb3">
+            <ee:message>
+                <ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+  orderId: 2000,
+  status: "order placed"
+} as Object {encoding: "UTF-8", mediaType: "application/json"}]]></ee:set-payload>
+            </ee:message>
+        </ee:transform>
+		<error-handler ref="lm-errorhandlingError_Handler" />
+    </flow>
+</mule>

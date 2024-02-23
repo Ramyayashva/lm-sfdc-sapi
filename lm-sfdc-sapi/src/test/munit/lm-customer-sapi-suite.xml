@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="lm-customer-sapi-suite.xml" />
+	<munit:test name="lm-customer-sapi-suiteTest" doc:id="c21de2f6-1bc6-4452-af60-a38656d7ba60" expectedErrorType="APIKIT:ANY">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="edb546c7-60e2-42ae-86a0-883f070ac1b5" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-sapi-config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="360ac1f3-2245-4014-b49a-aa6be1c03af5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="142e7f9d-e7aa-4dce-b0b1-37d441182168" name="lm-customer-sapi-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="958f6a8e-693b-4962-bc90-d79f19d4e7ab" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="lm-customer-sapi-main-test" doc:id="13309606-c6bb-4eff-8e87-8378503be853" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock APIkit Router" doc:id="37234105-4f80-4cfc-bf6c-02863a8624ce" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="360ac1f3-2245-4014-b49a-aa6be1c03af5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:payload value="#[output application/json  --- readUrl('classpath://lmcustomersapimaintest\mock_payload.dwl')]" mediaType="application/json " encoding="UTF-8" />
+					<munit-tools:attributes value="#[readUrl('classpath://lmcustomersapimaintest\mock_attributes.dwl')]" />
+					<munit-tools:variables >
+						<munit-tools:variable key="outboundHeaders" value="#[readUrl('classpath://lmcustomersapimaintest\mock_variable_.dwl')]" />
+						<munit-tools:variable key="orderid" value="#[output application/java --- readUrl('classpath://lmcustomersapimaintest\mock_variable_1.dwl')]" mediaType="application/java" encoding="UTF-8" />
+						<munit-tools:variable key="httpStatus" value="#[readUrl('classpath://lmcustomersapimaintest\mock_variable_2.dwl')]" />
+						<munit-tools:variable key="id" value="#[output application/java --- readUrl('classpath://lmcustomersapimaintest\mock_variable_3.dwl')]" mediaType="application/java" encoding="UTF-8" />
+					</munit-tools:variables>
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="badb2b77-0eaa-42b1-b003-a422c5de8fa2" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://lmcustomersapimaintest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://lmcustomersapimaintest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to lm-customer-sapi-main" doc:id="3ddcaf4e-c90c-44b7-8c45-40ddcfba32b1" name="lm-customer-sapi-main"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="aad972ca-e659-4af9-813e-46d2d27323cc" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import lmcustomersapimaintest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="lm-customer-sapi-suiteTest1" doc:id="4d90bb2a-33fd-4de4-92cc-52c25e0a06a6" expectedErrorType="APIKIT:NOT_FOUND">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="ac1ef2d3-454a-43cc-b88f-7143ad29b908" processor="apikit:console">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-sapi-config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="56339c80-9e4a-41a0-bc7f-5b352784a657" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="bbb03633-18ce-4b64-8c6b-58fe065429e4" name="lm-customer-sapi-console"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="5ab00a73-3f50-49a7-8211-525f6d4f3c43" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="lm-customer-sapi-console-test" doc:id="9a2c1fdd-b41b-47d9-aad8-126b93910301" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="b6ce16bd-3e4e-423f-aa9a-1e94bbaedf09" processor="http:listener">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-sapi-httpListenerConfig" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="/console/*" attributeName="path" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit-tools:mock-when doc:name="Mock when" doc:id="731efa60-f631-4607-8d99-875ef20de132" processor="apikit:console">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-sapi-config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="56339c80-9e4a-41a0-bc7f-5b352784a657" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:mock-when>
+			<munit:set-event doc:name="Set Input" doc:id="615740d0-031a-4213-b8e0-555f43ae0bc9" >
+				<munit:payload value="#[readUrl('classpath://lmcustomersapiconsoletest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://lmcustomersapiconsoletest\set-event_attributes.dwl')]" />
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to lm-customer-sapi-console" doc:id="daa7042e-14c8-4bcd-b2d3-973e034bb85d" name="lm-customer-sapi-console"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="5555c71b-f661-4f90-82a5-e229c3781862" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import lmcustomersapiconsoletest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify APIkit Console" doc:id="aca27c48-e928-47fd-9bcb-836907ac887f" processor="apikit:console" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="56339c80-9e4a-41a0-bc7f-5b352784a657" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="delete:\customer\(id):lm-customer-sapi-config-test" doc:id="f4af365a-6b2f-45d8-9a2b-b3ce0dd4daf9" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="7b3214c1-197e-4f3f-b771-f065412dfded" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://deletecustomeridlmcustomersapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://deletecustomeridlmcustomersapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://deletecustomeridlmcustomersapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to delete:\customer\(id):lm-customer-sapi-config" doc:id="c63dc768-1da7-4bc4-9ed3-ee9260697d31" name="delete:\customer\(id):lm-customer-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="60131f83-57b9-45a4-950a-eac9bcbde402" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import deletecustomeridlmcustomersapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="e72da906-bd33-4678-805f-f94ea6a7f802" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="2012e642-ea67-42ef-ac70-5fd59c4fddc8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="delete:\customer\(id)\orders\(orderid):lm-customer-sapi-config-test" doc:id="ac319491-1215-47d4-8421-db352c3d9b1a" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="57213d2e-33d3-4888-84c3-79d47f90f723" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://deletecustomeridordersorderidlmcustomersapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://deletecustomeridordersorderidlmcustomersapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://deletecustomeridordersorderidlmcustomersapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to delete:\customer\(id)\orders\(orderid):lm-customer-sapi-config" doc:id="c4eabb13-b033-437b-8379-0f2e5f88a353" name="delete:\customer\(id)\orders\(orderid):lm-customer-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="5cbdbb2d-98ac-4ae0-aa04-7344ee746bba" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import deletecustomeridordersorderidlmcustomersapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="20972b4b-4b70-4519-8ae7-124ed769911b" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="6a362e97-a87b-44eb-ac5b-90ab5c7378b8" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="patch:\customer\(id):application\json:lm-customer-sapi-config-test" doc:id="20138adf-b853-45cb-8e8a-9f8f8bbf38b6" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="99c4887d-651e-44d1-87bb-a71dce203504" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://patchcustomeridapplicationjsonlmcustomersapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://patchcustomeridapplicationjsonlmcustomersapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://patchcustomeridapplicationjsonlmcustomersapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to patch:\customer\(id):application\json:lm-customer-sapi-config" doc:id="b301b866-c94f-4fc9-a8c4-e3838f804aab" name="patch:\customer\(id):application\json:lm-customer-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="a218af31-d8a1-4980-bf18-6def3d739a2a" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import patchcustomeridapplicationjsonlmcustomersapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="39b4aa62-86d0-4f6a-8fcd-8e2efc422855" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="ded47b8a-3c0e-4f40-b9cf-db8839e886eb" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="d1e4da02-cb81-4703-8b4f-2caf8f0924e0" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="de53eb7c-25be-4934-a164-04ca1c553cc3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="patch:\customer\(id)\orders\(orderid):application\json:lm-customer-sapi-config-test" doc:id="08c830d8-d9c3-433d-946e-b98fb4bb8437" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="d9276931-1ee0-4e60-bdaf-899e64e81c0d" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://patchcustomeridordersorderidapplicationjsonlmcustomersapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://patchcustomeridordersorderidapplicationjsonlmcustomersapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://patchcustomeridordersorderidapplicationjsonlmcustomersapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to patch:\customer\(id)\orders\(orderid):application\json:lm-customer-sapi-config" doc:id="0390721f-add2-4356-ac8e-7511f07014d2" name="patch:\customer\(id)\orders\(orderid):application\json:lm-customer-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="268e9d5b-9bc4-401d-b9af-0309475d4143" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import patchcustomeridordersorderidapplicationjsonlmcustomersapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="36d64d13-60a2-4063-b686-16052a88e0bf" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="61132414-7d44-47cc-8c1f-db96f938c011" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="24073990-2ea7-48e8-9f11-677297cc2998" processor="ee:transform" atLeast="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="5fba663e-f415-413a-9367-9aed63e8b11b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\customer\(id):lm-customer-sapi-config-test" doc:id="9c72a313-b87d-475d-9c2e-674e8da19cac" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="001c5ecb-10ea-4385-949b-9076af67e2ee" >
+				<munit:payload value="#[readUrl('classpath://getcustomeridlmcustomersapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getcustomeridlmcustomersapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcustomeridlmcustomersapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\customer\(id):lm-customer-sapi-config" doc:id="17e8db2a-5f8f-4cd5-90a1-b835ca5d7e92" name="get:\customer\(id):lm-customer-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="6e9753f2-520d-454f-adc7-94df056cddb0" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getcustomeridlmcustomersapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="bad80e49-18f5-4ff2-9c00-b0af69ffe6b3" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="b74df023-7c7d-4fd8-9b3c-543a94221cb3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="69d4b0a5-146d-44b0-94c8-f1e326ed2ca5" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="c1f11be2-2445-403c-9386-33608dabb67b" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="get:\customer\(id)\orders\(orderid):lm-customer-sapi-config-test" doc:id="b2b17ef5-d9bb-4881-96c7-6d9bc0c6adb0" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="23058eb7-6cae-41aa-8b15-92293e636f0f" >
+				<munit:payload value="#[readUrl('classpath://getcustomeridordersorderidlmcustomersapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" />
+				<munit:attributes value="#[readUrl('classpath://getcustomeridordersorderidlmcustomersapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://getcustomeridordersorderidlmcustomersapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to get:\customer\(id)\orders\(orderid):lm-customer-sapi-config" doc:id="442cdc6b-1212-4ddb-9fa8-6b6cd25cfe13" name="get:\customer\(id)\orders\(orderid):lm-customer-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="03aecbaa-9f15-4a4f-bc66-ddd9a8a752e8" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import getcustomeridordersorderidlmcustomersapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="d10c905b-ae7f-47a8-88ae-c93379e120ce" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="dfc795bb-d792-4178-b20d-96a98ed2c4b0" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="8e95adaf-b764-440a-8de3-f7b726dc183c" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="4032403a-7cb6-455c-9859-3692e02cab53" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="post:\customer:application\json:lm-customer-sapi-config-test" doc:id="a4c9dde1-4b27-4edc-be89-4cbbd67ae080" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="1f9932ab-edc1-4259-8a8c-20f23a5999a4" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://postcustomerapplicationjsonlmcustomersapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://postcustomerapplicationjsonlmcustomersapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://postcustomerapplicationjsonlmcustomersapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\customer:application\json:lm-customer-sapi-config" doc:id="7a72a75c-67aa-4f4f-b770-32efc0320e79" name="post:\customer:application\json:lm-customer-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="42346461-643f-411b-b99c-9625237d4250" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postcustomerapplicationjsonlmcustomersapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="7f0b900c-1b35-4475-808a-05c30022014c" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="dad87414-a686-40d7-8645-9eb8019f90ec" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="post:\customer\(id)\orders:application\json:lm-customer-sapi-config-test" doc:id="c082ee5c-fb43-445b-8d01-1cbfa041e978" >
+		<munit:behavior >
+			<munit:set-event doc:name="Set Input" doc:id="84bce162-c3a9-4cf1-bd5b-7167bf6c1e43" >
+				<munit:payload value="#[output application/json  --- readUrl('classpath://postcustomeridordersapplicationjsonlmcustomersapiconfigtest\set-event_payload.dwl')]" encoding="UTF-8" mediaType="application/json " />
+				<munit:attributes value="#[readUrl('classpath://postcustomeridordersapplicationjsonlmcustomersapiconfigtest\set-event_attributes.dwl')]" />
+				<munit:variables >
+					<munit:variable key="outboundHeaders" value="#[readUrl('classpath://postcustomeridordersapplicationjsonlmcustomersapiconfigtest\set-event_variable_.dwl')]" />
+				</munit:variables>
+			</munit:set-event>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to post:\customer\(id)\orders:application\json:lm-customer-sapi-config" doc:id="0e4b1b6a-c132-4dfc-933e-c3bc2ffff375" name="post:\customer\(id)\orders:application\json:lm-customer-sapi-config"/>
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert payload" doc:id="c3fb6ff4-dac3-4378-9a01-15037b6b3efd" message="The payload does not match">
+				<munit-tools:that ><![CDATA[#[%dw 2.0
+import postcustomeridordersapplicationjsonlmcustomersapiconfigtest::assert_expression_payload
+---
+assert_expression_payload::main({payload: payload, attributes: attributes, vars: vars})]]]></munit-tools:that>
+			</munit-tools:assert>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="0cfa038b-2c87-43e4-9e3c-eceac447da6d" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="bd68f446-0bd9-492a-926f-b9b2644e8eb3" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+			<munit-tools:verify-call doc:name="Verify Transform Message" doc:id="ea56766e-6ab9-4329-83e3-241cbb620d17" processor="ee:transform" times="1">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="0e7a96b3-41a8-496c-8d16-81c3eab20247" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+			</munit-tools:verify-call>
+		</munit:validation>
+	</munit:test>
+	<munit:test name="lm-customer-sapi-APIKIT:BAD_REQUEST" doc:id="f7b4197a-955d-4166-9626-b9a2704b3e9f" expectedErrorType="APIKIT:BAD_REQUEST" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="9c85942a-c17b-4aa4-9675-6b13943163ce" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-sapi-config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="360ac1f3-2245-4014-b49a-aa6be1c03af5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="6518ed1c-3be6-460b-ac50-6bf716841a00" name="lm-customer-sapi-main" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="96b8b667-ec94-4aac-bbc8-065b730a241e" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="lm-customer-sapi-APIKIT:METHOD_NOT_ALLOWED" doc:id="60413417-eacf-4326-b731-9299cad5923d" expectedErrorType="APIKIT:METHOD_NOT_ALLOWED" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="be103ea5-ecd0-4733-89ed-353afbd1eb29" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-sapi-config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="360ac1f3-2245-4014-b49a-aa6be1c03af5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:METHOD_NOT_ALLOWED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="379bf3f8-ed07-462e-9f36-c815a677b220" name="lm-customer-sapi-main" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="27ce5009-afcd-4043-a50d-ad3cebbcf0e6" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="lm-customer-sapi-APIKIT:NOT_ACCEPTABLE" doc:id="70460ed4-4469-46d1-afe1-0e012a7c4e08" expectedErrorType="APIKIT:NOT_ACCEPTABLE" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="3d9c1408-bed1-4bfb-8760-ac4c1d756085" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-sapi-config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="360ac1f3-2245-4014-b49a-aa6be1c03af5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="82268331-2695-41b5-b070-c06625e61e5b" name="lm-customer-sapi-main" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="77c2037d-6e16-4ca4-a2e5-2cb8ca4d7b90" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="lm-customer-sapi-APIKIT:NOT_FOUND" doc:id="32977a85-f8c4-4b07-8a4d-6e09caa4c501" expectedErrorType="APIKIT:NOT_FOUND" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="749b7193-ef4c-4cd8-831c-d96e3ac065b8" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-sapi-config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="360ac1f3-2245-4014-b49a-aa6be1c03af5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="4c193727-8329-42e4-8056-22b3d47f60fc" name="lm-customer-sapi-main" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="86867d36-2716-46dd-b66a-d12b3207ccef" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="lm-customer-sapi-APIKIT:NOT_IMPLEMENTED" doc:id="bc5952c0-0797-44b6-8130-65069a87a62e" expectedErrorType="APIKIT:NOT_IMPLEMENTED" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="1dd41682-bfe0-4378-a0c0-42c7333c02c7" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-sapi-config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="360ac1f3-2245-4014-b49a-aa6be1c03af5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="2a3bdf05-0128-484f-bb09-f06f1f44afa8" name="lm-customer-sapi-main" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="3bbe85a7-2562-4bad-8639-0a6911e8d957" />
+		</munit:validation>
+	</munit:test>
+	<munit:test name="lm-customer-sapi-APIKIT:UNSUPPORTED_MEDIA_TYPE" doc:id="c1df04da-8308-4f29-9b69-9e6daf7c8d9e" expectedErrorType="APIKIT:UNSUPPORTED_MEDIA_TYPE" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="19804d97-2ed9-4adb-a798-b6fe03bed33b" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="lm-customer-sapi-config" attributeName="config-ref" />
+					<munit-tools:with-attribute whereValue="360ac1f3-2245-4014-b49a-aa6be1c03af5" attributeName="doc:id" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow Reference" doc:id="c90ffce3-03aa-4237-b94a-e646251de446" name="lm-customer-sapi-main" />
+		</munit:execution>
+		<munit:validation >
+			<munit-tools:assert doc:name="Assert expression" doc:id="12bc35e7-fb00-402b-b8b3-f942c436a223" />
+		</munit:validation>
+	</munit:test>
+
+
+</mule>
